@@ -2,6 +2,11 @@ module Spree
   class GiftCardsController < BaseController
     helper 'spree/admin/base'
     #before_filter :authenticate_user!, :only => :new
+    
+    def index
+      redirect_to new_gift_card_path
+    end
+    
     def new
       find_gift_card_variants
       @gift_card = GiftCard.new
@@ -58,7 +63,8 @@ module Spree
           flash[:error] =  t("spree_gift_card.messages.register_error")
         end
       else
-        session[:gift_card] = @gift_card.token
+        #session[:gift_card] = @gift_card.token
+        session["user_return_to"] = confirm_gift_card_path(@gift_card.token)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
       end
       redirect_to root_url
@@ -68,6 +74,7 @@ module Spree
       @gift_card = GiftCard.new(:email => params[:email], :name => params[:name], :sender_name => params[:sender_name], :variant_id => params[:variant_id])
     end
   
+    # Where a user goes to start the activation process
     def confirm
       @gift_card = GiftCard.find_by_token(params[:id])
       if @gift_card.is_received
@@ -77,11 +84,12 @@ module Spree
       end
     
       if !current_user || current_user.anonymous?
-        session[:gift_card] = @gift_card.token
+        # session[:gift_card] = @gift_card.token
+        session["user_return_to"] = confirm_gift_card_path(@gift_card.token)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
-        redirect_to root_url
-      else 
-         session[:gift_card] = nil
+        redirect_to new_user_session_path
+      # else 
+         # session[:gift_card] = nil
       end
     
     end

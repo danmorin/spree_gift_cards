@@ -6,7 +6,7 @@ module Spree
     belongs_to :recipient, :class_name => "User"
     belongs_to :store_credit
 
-    validates :email, :presence => true
+    validates :email, :presence => true, :email => true
     validates :name, :presence => true
     validates :sender_name, :presence => true
     validates :variant, :presence => {:message => "Price option must be selected"}
