@@ -8,7 +8,7 @@ module Spree
     def finalize_with_gift_card!
       self.line_items.each do |li|
         if li.gift_card && li.gift_card.delivery_method == 'email'
-          OrderMailer.gift_card_email(li.gift_card, self).deliver 
+          OrderMailer.delay.gift_card_email(li.gift_card, self)
         end
       end
     end
