@@ -16,8 +16,8 @@ en:
     sender_text: "I sent a"
     sender: "to"
     recipient: "from"
-    instructions: "Choose the amount you wish to send and fill out the information below.  Please be sure to sign your note to the sender, so they know who to thank!  Once you have completed check-out, we will send an email to the recipient.  It will include the note you write, the amount of the gift, information about twigtale.com, and a link to redeem the gift certificate amount."
-    instructions_resend: "Update the information below to resend the Gift Card.  Please be sure to sign your note to the sender, so they know who to thank!  We will send an email to the recipient.  It will include the note you write, the amount of the gift, information about twigtale.com, and a link to redeem the gift certificate amount."
+    instructions: "Choose the amount you wish to send and fill out the information below.  Please be sure to sign your note to the sender, so they know who to thank!  Once you have completed check-out, we will send an email to the recipient.  It will include the note you write, the amount of the gift, and a link to redeem the gift certificate amount."
+    instructions_resend: "Update the information below to resend the Gift Card.  Please be sure to sign your note to the sender, so they know who to thank!  We will send an email to the recipient.  It will include the note you write, the amount of the gift, and a link to redeem the gift certificate amount."
     messages:
       activated: "Gift card activated, now you have store credit and can use it to pay for purchases in full or in part"
       authorization_required: "To use gift card you should sign up or log in if you're already registered."
@@ -26,4 +26,4 @@ en:
       successfully_updated: "Gift card was successfully updated!"
       by_email: "Send the lucky someone their Gift Card by email"
       by_print: "Show me a neat page I can print and give to them physically"
-      email_subject: "%{sender} sent you a gift certificate to www.twigtale.com!"
+      email_subject: "%{sender} sent you a gift certificate!"

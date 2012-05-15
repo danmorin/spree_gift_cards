@@ -89,8 +89,11 @@ module Spree
     private
 
     def find_gift_card_variants
-      gift_card_product_ids = Product.not_deleted.where(["is_gift_card = ?", true]).map(&:id)
-      @gift_card_variants = Variant.where(["price > 0 AND product_id IN (?)", gift_card_product_ids]).order("price")
+      @gift_card_variants = Variant.joins(:product).
+                                where("spree_products.is_gift_card = ?", true).
+                                where("spree_variants.price > ?", 0).
+                                where("spree_variants.is_master = ?", false). # Assuming there will be variants
+                                order("spree_variants.price")
     end
   end
 end
