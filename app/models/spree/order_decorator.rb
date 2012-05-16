@@ -15,7 +15,7 @@ module Spree
 
     def contains?(variant)
       return false if variant.product.is_gift_card?
-      line_items.detect{|line_item| line_item.variant_id == variant.id}
+      line_items.detect { |line_item| line_item.variant_id == variant.id }
     end
   end
 end

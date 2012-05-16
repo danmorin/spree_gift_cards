@@ -31,12 +31,12 @@ module Spree
     end
 
     def edit
-      @gift_card = GiftCard.find(params[:id])
+      @gift_card = GiftCard.find_by_token(params[:id])
       access_forbidden unless @gift_card && @gift_card.sender == current_user
     end
 
     def update
-      @gift_card = GiftCard.find(params[:id])
+      @gift_card = GiftCard.find_by_token(params[:id])
       access_forbidden unless @gift_card && @gift_card.sender == current_user && !@gift_card.is_received?
       params[:gift_card].delete(:variant_id)
       if @gift_card.update_attributes(params[:gift_card])
@@ -64,7 +64,7 @@ module Spree
         end
       else
         #session[:gift_card] = @gift_card.token
-        session["user_return_to"] = confirm_gift_card_path(@gift_card.token)
+        session["user_return_to"] = confirm_gift_card_path(@gift_card)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
       end
       redirect_to root_url
@@ -85,7 +85,7 @@ module Spree
     
       if !current_user || current_user.anonymous?
         # session[:gift_card] = @gift_card.token
-        session["user_return_to"] = confirm_gift_card_path(@gift_card.token)
+        session["user_return_to"] = confirm_gift_card_path(@gift_card)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
         redirect_to new_user_session_path
       # else 

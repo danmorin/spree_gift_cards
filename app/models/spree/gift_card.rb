@@ -45,11 +45,31 @@ module Spree
       self.store_credit_id  = @sc.id
       self.save
     end
+    
+    def token_formatted
+      token.scan(/.{1,5}/).join("-")
+    end
+    
+    # Find the gift card using a token that may include formatting
+    def self.find_by_token(token)
+      where(:token => token.gsub(/[^0-9a-z]/i, '').upcase).first!
+    end
+    
+    def to_param
+      token_formatted
+    end
 
     private
 
     def generate_token
-      self.token = Digest::SHA1.hexdigest([Time.now, rand].join)
+      chars = %w{A C D E F G H J K L M N P R S T U V W X Y Z 2 3 4 5 6 7 9}
+      
+      record = true
+      while record
+        random = (1..15).collect{|a| chars[rand(chars.size)] }.join
+        record = self.class.where(:token => random).exists?
+      end
+      self.token = random
     end
   end
 end
