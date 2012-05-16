@@ -33,16 +33,29 @@ module Spree
     def edit
       @gift_card = GiftCard.find_by_token(params[:id])
       access_forbidden unless @gift_card && @gift_card.sender == current_user
+      if @gift_card.purchased?
+        flash[:error] = t("spree_gift_card.messages.purchased_no_edit")
+        return redirect_to root_url
+      end
     end
 
     def update
       @gift_card = GiftCard.find_by_token(params[:id])
       access_forbidden unless @gift_card && @gift_card.sender == current_user && !@gift_card.is_received?
+      
+      if @gift_card.purchased?
+        flash[:error] = t("spree_gift_card.messages.purchased_no_edit")
+        return redirect_to root_url
+      end
+      
       params[:gift_card].delete(:variant_id)
       if @gift_card.update_attributes(params[:gift_card])
-        OrderMailer.gift_card_email(@gift_card, @gift_card.line_item.order).deliver if @gift_card.sent_at.present?
+
+        # We don't want to resend them and we're not letting them update it after the order is complete
+        # OrderMailer.gift_card_email(@gift_card, @gift_card.line_item.order).deliver if @gift_card.sent_at.present?
+
         flash[:notice] = t("spree_gift_card.messages.successfully_updated")
-        redirect_to account_url
+        redirect_to cart_path
       else
         render :action => :edit
       end
@@ -50,10 +63,14 @@ module Spree
 
     def activate
       @gift_card = GiftCard.find_by_token(params[:id])
-      if @gift_card.is_received
-        flash[:error] = t("gift_card_messages.cant_activate")
-        redirect_to root_url
-        return
+      if @gift_card.is_received?
+        flash[:error] = t("spree_gift_card.messages.cant_activate")
+        return redirect_to root_url
+      end
+      
+      unless @gift_card.purchased?
+        flash[:error] = t("spree_gift_card.messages.invalid")
+        return redirect_to root_url
       end
 
       if current_user && !current_user.anonymous?
@@ -77,10 +94,14 @@ module Spree
     # Where a user goes to start the activation process
     def confirm
       @gift_card = GiftCard.find_by_token(params[:id])
-      if @gift_card.is_received
-        flash[:error] = t("gift_card_messages.cant_activate")
-        redirect_to root_url
-        return
+      if @gift_card.is_received?
+        flash[:error] = t("spree_gift_card.messages.cant_activate")
+        return redirect_to root_url
+      end
+      
+      unless @gift_card.purchased?
+        flash[:error] = t("spree_gift_card.messages.invalid")
+        return redirect_to root_url
       end
     
       if !current_user || current_user.anonymous?

@@ -58,6 +58,10 @@ module Spree
     def to_param
       token_formatted
     end
+    
+    def purchased?
+      line_item && line_item.order.complete?
+    end
 
     private
 

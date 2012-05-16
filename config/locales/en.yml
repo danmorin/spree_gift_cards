@@ -27,3 +27,5 @@ en:
       by_email: "Send the lucky someone their Gift Card by email"
       by_print: "Show me a neat page I can print and give to them physically"
       email_subject: "%{sender} sent you a gift certificate!"
+      invalid: "That gift card is invalid"
+      purchased_no_edit: "That gift card has been sent and can not be updated."
