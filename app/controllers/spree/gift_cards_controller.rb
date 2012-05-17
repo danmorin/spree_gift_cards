@@ -19,8 +19,7 @@ module Spree
       @gift_card = GiftCard.new(params[:gift_card])
       if @gift_card.save
         @order = current_order(true)
-        line_item = @order.add_variant(@gift_card.variant, 1)
-        @gift_card.line_item = line_item
+        @gift_card.assign_to_order(@order)
         @gift_card.sender = current_user
         @gift_card.save
         redirect_to cart_path
@@ -50,9 +49,10 @@ module Spree
       
       params[:gift_card].delete(:variant_id)
       if @gift_card.update_attributes(params[:gift_card])
-
-        # We don't want to resend them and we're not letting them update it after the order is complete
-        # OrderMailer.gift_card_email(@gift_card, @gift_card.line_item.order).deliver if @gift_card.sent_at.present?
+        
+        @order = current_order(true)
+        @gift_card.assign_to_order(@order)
+        @gift_card.save
 
         flash[:notice] = t("spree_gift_card.messages.successfully_updated")
         redirect_to cart_path

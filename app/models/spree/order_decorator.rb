@@ -7,8 +7,13 @@ module Spree
     # Called after transition to complete state when payments will have been processed
     def finalize_with_gift_card!
       self.line_items.each do |li|
-        if li.gift_card && li.gift_card.delivery_method == 'email'
-          OrderMailer.delay.gift_card_email(li.gift_card, self)
+        if li.gift_card 
+          # Make sure user is correct
+          li.gift_card.sender = self.user
+          li.gift_card.save
+          if li.gift_card.delivery_method == 'email'
+            OrderMailer.delay.gift_card_email(li.gift_card, self)
+          end
         end
       end
     end
