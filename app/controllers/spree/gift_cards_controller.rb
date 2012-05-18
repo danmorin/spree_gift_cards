@@ -79,18 +79,14 @@ module Spree
         else
           flash[:error] =  t("spree_gift_card.messages.register_error")
         end
+        redirect_to "/t/clothing"
       else
-        #session[:gift_card] = @gift_card.token
         session["user_return_to"] = confirm_gift_card_path(@gift_card)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
+        redirect_to new_user_session_path
       end
-      redirect_to root_url
     end
-  
-    def preview
-      @gift_card = GiftCard.new(:email => params[:email], :name => params[:name], :sender_name => params[:sender_name], :variant_id => params[:variant_id])
-    end
-  
+
     # Where a user goes to start the activation process
     def confirm
       @gift_card = GiftCard.find_by_token(params[:id])
@@ -105,12 +101,9 @@ module Spree
       end
     
       if !current_user || current_user.anonymous?
-        # session[:gift_card] = @gift_card.token
         session["user_return_to"] = confirm_gift_card_path(@gift_card)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
         redirect_to new_user_session_path
-      # else 
-         # session[:gift_card] = nil
       end
     
     end
