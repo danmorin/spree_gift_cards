@@ -53,9 +53,8 @@ module Spree
        joins(:store_credit).where("recipient_id = ?", user_id).sum(:remaining_amount)
     end
 
+    # Used for the final price of the purchased gift card
     def price
-      # self.line_item || self.variant ? (self.line_item ? self.line_item.price * self.line_item.quantity : self.variant.price) : 0.0
-    
       if line_item
         line_item.price * line_item.quantity
       elsif variant
@@ -63,6 +62,12 @@ module Spree
       else
         0.0
       end
+    end
+    
+    # Used while setting the amount of the gift card
+    def amount
+      return @amount if @amount
+      return variant.price if variant
     end
 
     def register(user)
@@ -93,11 +98,6 @@ module Spree
     def purchased?
       line_item && line_item.order.complete?
     end
-
-    def amount
-      return @amount if @amount
-      return variant.price if variant
-    end
     
     def assign_to_order(order)
       if line_item
@@ -110,6 +110,12 @@ module Spree
       end
       
       self.line_item = order.add_variant(self.variant, 1)
+    end
+    
+    def options_text
+      text = "To: #{name}" 
+      text << " (#{email})" if email? && email_delivery?
+      text
     end
 
     private
