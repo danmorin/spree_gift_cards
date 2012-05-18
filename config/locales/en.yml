@@ -19,7 +19,7 @@ en:
     instructions: "Choose the amount you wish to send and fill out the information below.  Please be sure to sign your note to the sender, so they know who to thank!  Once you have completed check-out, we will send an email to the recipient.  It will include the note you write, the amount of the gift, and a link to redeem the gift certificate amount."
     instructions_resend: "Update the information below to resend the Gift Card.  Please be sure to sign your note to the sender, so they know who to thank!  We will send an email to the recipient.  It will include the note you write, the amount of the gift, and a link to redeem the gift certificate amount."
     messages:
-      activated: "This gift card has been actived! You can check your balance from the My Account page."
+      activated: "This gift card has been activated! You can check your balance from the My Account page."
       authorization_required: "To active your gift card, please login or sign up!"
       cant_activate: "This gift card has already been actived."
       register_error: "Couldn't register this gift card"
