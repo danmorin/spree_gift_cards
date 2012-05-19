@@ -2,4 +2,4 @@ A gift certificate for <%= @gift_card.name %> in the amount of <%= number_to_cur
 <br/>
 <% cur_name = current_user.full_name %>
 This gift certificate will be added to <strong> <%= current_user.full_name %>'s (<%= current_user.email%>) account </strong><br/><br/>
-If you are sure you want to do this then click on this <%= link_to 'link', activate_gift_card_url(@gift_card), :confirm => ['Are you sure you want to add the gift card in the amount of ', number_to_currency(@gift_card.price), ' to ', cur_name, '(', current_user.email, ')\'s account'].join %>, to activate the gift certificate. 
+If you are sure you want to do this then click on this <%= link_to 'link', activate_gift_card_url(@gift_card), :confirm => ['Are you sure you want to add the gift card in the amount of ', number_to_currency(@gift_card.price), ' to ', cur_name, '(', current_user.email, ')\'s account'].join, :method => :post %>, to activate the gift certificate. 

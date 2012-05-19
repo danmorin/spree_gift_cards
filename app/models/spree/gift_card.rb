@@ -18,7 +18,7 @@ module Spree
     validates :address,         :presence => { if: :ship_delivery?}
     validates :name,            :presence => true
     validates :sender_name,     :presence => true
-    validates :variant,         :presence => { :message => "Price option must be selected" }
+    validates :variant,         :presence => { :if => proc { amount.present? && delivery_method? } }
     validates :delivery_method, :inclusion => { :in => %w{ email ship } }
     # validates :amount,          :presence => { :unless => :variant_id? },
     #                            :numericality => { :greater_than_or_equal_to => 1, :less_than_or_equal_to => 1500 },
@@ -133,7 +133,7 @@ module Spree
     
     def set_variant
       return if line_item && line_item.order.completed?
-      return unless @amount && delivery_method?
+      return unless amount.present? && delivery_method?
       
       product = gift_card_product
       if product
