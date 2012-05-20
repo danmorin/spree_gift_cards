@@ -30,7 +30,7 @@ module Spree
     end
 
     def edit
-      @gift_card = GiftCard.find_by_token(params[:id])
+      @gift_card = GiftCard.find_by_token!(params[:id])
       access_forbidden unless @gift_card && @gift_card.sender == current_user
       if @gift_card.purchased?
         flash[:error] = t("spree_gift_card.messages.purchased_no_edit")
@@ -39,7 +39,7 @@ module Spree
     end
 
     def update
-      @gift_card = GiftCard.find_by_token(params[:id])
+      @gift_card = GiftCard.find_by_token!(params[:id])
       access_forbidden unless @gift_card && @gift_card.sender == current_user && !@gift_card.is_received?
       
       if @gift_card.purchased?
@@ -61,8 +61,29 @@ module Spree
       end
     end
 
+    # Where a user goes to start the activation process
+    def confirm
+      @gift_card = GiftCard.find_by_token!(params[:id])
+      if @gift_card.is_received?
+        flash[:error] = t("spree_gift_card.messages.cant_activate")
+        return redirect_to root_url
+      end
+      
+      unless @gift_card.purchased?
+        flash[:error] = t("spree_gift_card.messages.invalid")
+        return redirect_to root_url
+      end
+    
+      if !current_user || current_user.anonymous?
+        session["user_return_to"] = confirm_gift_card_path(@gift_card)
+        flash[:notice] = t("spree_gift_card.messages.authorization_required")
+        redirect_to new_user_session_path
+      end
+    end
+
+    # Member method that activates a gift card
     def activate
-      @gift_card = GiftCard.find_by_token(params[:id])
+      @gift_card = GiftCard.find_by_token!(params[:id])
       if @gift_card.is_received?
         flash[:error] = t("spree_gift_card.messages.cant_activate")
         return redirect_to root_url
@@ -86,36 +107,55 @@ module Spree
         redirect_to new_user_session_path
       end
     end
-
-    # Where a user goes to start the activation process
-    def confirm
-      @gift_card = GiftCard.find_by_token(params[:id])
+    
+    # Collection methods used when they need to manually enter the number
+    def redeem
+      
+    end
+    
+    def claim
+      @gift_card = GiftCard.find_by_token(params[:token])
+      if @gift_card.nil?
+        flash.now[:error] = "The claim code you entered is not valid. It should look like this: DUG5D-ABRUD-AP54S"
+        render :redeem and return
+      end
+      
       if @gift_card.is_received?
-        flash[:error] = t("spree_gift_card.messages.cant_activate")
-        return redirect_to root_url
+        flash.now[:error] = t("spree_gift_card.messages.cant_activate")
+        render :redeem and return
       end
       
       unless @gift_card.purchased?
         flash[:error] = t("spree_gift_card.messages.invalid")
-        return redirect_to root_url
+        render :redeem and return
       end
-    
-      if !current_user || current_user.anonymous?
+
+      if current_user && !current_user.anonymous?
+        if @gift_card.register(current_user)
+          flash[:notice] = t("spree_gift_card.messages.activated")
+        else
+          flash[:error] =  t("spree_gift_card.messages.register_error")
+        end
+        redirect_to "/t/clothing"
+      else
         session["user_return_to"] = confirm_gift_card_path(@gift_card)
         flash[:notice] = t("spree_gift_card.messages.authorization_required")
         redirect_to new_user_session_path
       end
-    
     end
 
     private
 
-    def find_gift_card_variants
-      @gift_card_variants = Variant.joins(:product).
-                                where("spree_products.is_gift_card = ?", true).
-                                where("spree_variants.price > ?", 0).
-                                where("spree_variants.is_master = ?", false). # Assuming there will be variants
-                                order("spree_variants.price")
-    end
+      def find_gift_card_variants
+        @gift_card_variants = Variant.joins(:product).
+                                  where("spree_products.is_gift_card = ?", true).
+                                  where("spree_variants.price > ?", 0).
+                                  where("spree_variants.is_master = ?", false). # Assuming there will be variants
+                                  order("spree_variants.price")
+      end
+      
+      def do_activate
+        
+      end
   end
 end

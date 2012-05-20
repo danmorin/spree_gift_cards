@@ -87,8 +87,12 @@ module Spree
     end
     
     # Find the gift card using a token that may include formatting
-    def self.find_by_token(token)
+    def self.find_by_token!(token)
       where(:token => token.gsub(/[^0-9a-z]/i, '').upcase).first!
+    end
+    
+    def self.find_by_token(token)
+      where(:token => token.gsub(/[^0-9a-z]/i, '').upcase).first
     end
     
     def to_param
