@@ -8,9 +8,11 @@ module Spree
     def finalize_with_gift_card!
       self.line_items.each do |li|
         if li.gift_card 
-          # Make sure user is correct
+          # Make sure user is correct. They may not be if it was created as an
+          # anonymous user and then they registered at checkout
           li.gift_card.sender = self.user
           li.gift_card.save
+          
           if li.gift_card.delivery_method == 'email'
             OrderMailer.delay.gift_card_email(li.gift_card, self)
           end
