@@ -110,7 +110,11 @@ module Spree
     
     # Collection methods used when they need to manually enter the number
     def redeem
-      
+      unless current_user && !current_user.anonymous?
+        session["user_return_to"] = redeem_path
+        flash[:notice] = t("spree_gift_card.messages.authorization_required")
+        return redirect_to new_user_session_path
+      end
     end
     
     def claim
