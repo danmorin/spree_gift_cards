@@ -9,5 +9,5 @@ Spree::Core::Engine.routes.prepend do
     end
   end
   
-  match "redeem" => "gift_cards#redeem"
+  match "redeem" => "gift_cards#redeem", :as => "redeem"
 end
