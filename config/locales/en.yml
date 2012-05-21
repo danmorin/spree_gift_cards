@@ -20,9 +20,9 @@ en:
     instructions_resend: "Update the information below to resend the Gift Card.  Please be sure to sign your note to the sender, so they know who to thank!  We will send an email to the recipient.  It will include the note you write, the amount of the gift, and a link to redeem the gift certificate amount."
     messages:
       activated: "This gift card has been activated! You can check your balance from the My Account page."
-      authorization_required: "To active your gift card, please login or sign up!"
-      cant_activate: "This gift card has already been actived."
-      register_error: "Couldn't register this gift card"
+      authorization_required: "To activate your gift card, please login or sign up!"
+      cant_activate: "This gift card has already been activated."
+      register_error: "We couldn't register this gift card"
       successfully_updated: "The gift card was successfully updated!"
       by_email: "Send the lucky someone their Gift Card by email"
       by_print: "Show me a neat page I can print and give to them physically"
